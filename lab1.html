@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Data Form Validator</title>
+        <script>
+            // Java Script
+            let form
+            let uname
+            let pass
+            let id
+            let message
+
+            function submit() {
+                let result = document.getElementById("result");
+                checkUsername(uname);
+                checkPassword(pass);
+                checkID(id);
+                let checks = document.getElementsByClassName("hidden")
+                let body = document.getElementsByTagName("body")[0]
+                let usernameerror = document.getElementById("uname-error").classList.contains("hidden") ? "" : "Username, "
+                let passerror = document.getElementById("pass-error").classList.contains("hidden") ? "" : "Password, "
+                let iderror = document.getElementById("id-error").classList.contains("hidden") ? "" : "Student ID"
+
+                if (checks.length == 3) {
+                    result.innerHTML = "SUCCESS!"
+                    body.classList.remove("error")
+                } else {
+                    result.innerHTML = `Please fix invalid input(s): ${usernameerror}${passerror}${iderror} and try again`
+
+                    body.classList.add("error")
+
+                }
+            }
+
+            function checkIsAlphabet(char) {
+                char = char.charCodeAt(0)
+                return (char >= 65 && char < 91) || (char >= 97 && char < 123)
+            }
+
+            function validateUsername(uname) {
+                let error = document.getElementById("uname-error")
+                if (uname.length < 1) {
+                    error.innerHTML = "username can't be empty"
+                    return false
+                }
+                let valid = true
+                for (let i = 0; i < uname.length; i++) {
+                    if (!checkIsAlphabet(uname.charAt(i))) {
+                        error.innerHTML = "only letters are allowed"
+                        return false
+                    }
+                }
+                return true
+            }
+
+            function isUpperCase(char) {
+                char = char.charCodeAt(0)
+                return (char >= 65 && char < 91)
+            }
+
+            function isLowerCase(char) {
+                char = char.charCodeAt(0)
+                return (char >= 97 && char < 123)
+            }
+
+            function validatePassword(pass) {
+                let uppercase = 0
+                let lowercase = 0
+                for (let i = 0; i < pass.length; i++) {
+                    if (isUpperCase(pass.charAt(i))) {
+                        uppercase++
+                    }
+                    if (isLowerCase(pass.charAt(i))) {
+                        lowercase++
+                    }
+                }
+                return (uppercase > 0 && lowercase > 0)
+
+            }
+
+            function checkUsername(uname) {
+                let error = document.getElementById("uname-error")
+                if (validateUsername(uname.value)) {
+                    uname.classList.remove("invalid")
+                    error.classList.add("hidden")
+                } else {
+                    uname.classList.add("invalid")
+                    error.classList.remove("hidden")
+                }
+            }
+
+            function checkPassword(pass) {
+                let error = document.getElementById("pass-error")
+                if (validatePassword(pass.value)) {
+                    pass.classList.remove("invalid")
+                    error.classList.add("hidden")
+                } else {
+                    pass.classList.add("invalid")
+                    error.classList.remove("hidden")
+                }
+            }
+
+               function checkID(id) {
+                let error = document.getElementById("id-error")
+
+                if (validID(id.value)) {
+                    id.classList.remove("invalid")
+                    error.classList.add("hidden")
+
+                } else {
+                    id.classList.add("invalid")
+                    error.classList.remove("hidden")
+
+                }
+            }
+
+            function checkMessage(message) {
+                let wordsCount = document.getElementById("words")
+
+                if (message.value.trim().length == 0) {
+                    wordsCount.innerHTML = 10
+                } else {
+                    let arr = message.value.trim().split(/\s+/)
+                    let count = 10 - arr.length
+                    wordsCount.innerHTML = count
+                    arr = message.value.split(/\s+/)
+                    count = 10 - arr.length
+                    if (count == -1) {
+                        message.innerHTML = message.innerHTML.trim()
+                        message.setAttribute("disabled", "")
+                    }
+                }
+            }
+            function validID(id) {
+                let error = document.getElementById("id-error")
+                if (id.length != 9) {
+                    error.innerHTML = "Student ID must be 9 digits"
+                    return false
+                }
+                for (let i = 0; i < id.length; i++) {
+                    if (Number.isNaN(parseInt(id.charAt(i)))) {
+                        error.innerHTML = "Only numbers are allowed"
+                        return false
+                    }
+                }
+                return true
+
+            }
+            window.addEventListener("load", () => {
+                form = document.getElementById("form")
+                uname = document.getElementById("uname")
+                pass = document.getElementById("pass")
+                id = document.getElementById("id")
+                message = document.getElementById("message")
+                uname.addEventListener("change", () => checkUsername(uname))
+                pass.addEventListener("change", () => checkPassword(pass))
+                id.addEventListener("change", () => checkID(id))
+                message.addEventListener("keyup", (e) => checkMessage(message))
+                form.addEventListener("submit", (e) => e.preventDefault())
+                let submitbtn = document.getElementById("submit")
+                submitbtn.addEventListener("click", submit)
+            })
+        </script>
+        
+    </head>
+
+    <body>
+        
+        <style >
+            
+            form{
+                width: 40%;
+                margin-left: 10px;
+            }
+            
+            form div,
+            input,
+            textarea {
+                width: 100%;
+                box-sizing: content-box;
+            }
+            
+            textarea {
+                min-height: 60px;
+            }
+            
+            form p {
+                padding: 0;
+                margin: 0 0 10px;
+                text-align: left;
+            }
+            
+            form div {
+                padding: 10px;
+            }
+            
+            .invalid {
+                border-color: rgb(0, 0, 0);
+                background: rgb(77, 77, 77);
+            }
+            .hidden {
+                display: none;
+            }
+            .error {
+                background: rgb(66, 152, 163);
+            }
+            
+            input,
+            textarea {
+                margin-top: 5px;
+            }
+
+            h4 {
+            display: block;
+            margin-block-start: 1.33em;
+            margin-block-end: 1.33em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            font-weight: bold;
+            text-align: center;
+            }
+            
+            form div:last-child {
+                padding-top: 0;
+            }
+            
+            input[type="submit"] {
+                margin: 0;
+                width: 100%;
+            }
+            
+            .invalid-input {
+                margin: 10;
+            }
+            @font-face {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            src: url(sansation_light.woff);
+             }
+            div, h1 {
+           font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+          }
+        </style>
+
+        <form id="form">
+            <h1>Lab 1 Form Validator</h1>
+            <div>
+                <label for="uname">Username:</label><br/>
+                <input type="text" name="uname" placeholder="user" id="uname">
+                <p id="uname-error" class="invalid-input hidden">only letters are allowed</p>
+            </div>
+            <div>
+                <label for="pass">Password:</label><br/>
+                <input type="pass" name="pass" placeholder="Test123" id="pass">
+                <p id="pass-error" class="invalid-input hidden">Password must include 1 uppercase and 1 lowercase letters</p>
+            </div>
+            <div>
+                <label for="id">Student ID:</label><br/>
+                <input type="text" name="id" placeholder="123456789" id="id">
+                <p id="id-error" class="invalid-input hidden">Student ID must be 9 digits</p>
+            </div>
+            <div>
+                <label for="message">Message:</label><br/>
+                <textarea name="message" placeholder="Limited to 10 words" id="message"></textarea>
+                <p><span id="words">10</span> words left</p>
+            </div>
+            <div>
+                <input id="submit" type="button" value="Submit">
+            </div>
+            <div>
+                <h4 id="result"></h4>
+            </div>
+        </form>
+
+    </body>
+
+</html>
